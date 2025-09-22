@@ -61,9 +61,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         products = await storage.getAllProducts();
       }
+      console.log("Listed products: ",products);
       
       res.json(products);
     } catch (error) {
+      console.log("Listed products fetch failed");
       res.status(500).json({ message: "Failed to fetch products" });
     }
   });

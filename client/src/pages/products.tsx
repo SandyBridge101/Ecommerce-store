@@ -19,7 +19,7 @@ export default function Products() {
   const [filters, setFilters] = useState({});
 
   const { data: products, isLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products", { category: categoryParam }],
+    queryKey: ["/api/products"],
   });
 
   if (isLoading) {

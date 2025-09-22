@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechHub - Professional Electronics Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                }
+            }
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: hsl(0 0% 100%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(221.2 83.2% 53.3%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(210 40% 96%);
+            --accent-foreground: hsl(222.2 84% 4.9%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(221.2 83.2% 53.3%);
+            --radius: 8px;
+            --font-sans: 'Inter', system-ui, sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .cart-badge {
+            animation: pulse 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <!-- @COMPONENT: Header [navigation, cart, user account] -->
+    <header class="bg-white border-b border-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <button class="text-primary text-2xl font-bold" onclick="showPage('homepage')">
+                        TechHub
+                    </button>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <button class="text-foreground hover:text-primary transition-colors" onclick="showPage('homepage')">Home</button>
+                    <button class="text-foreground hover:text-primary transition-colors" onclick="showPage('products')">Products</button>
+                    <button class="text-foreground hover:text-primary transition-colors" onclick="showPage('categories')">Categories</button>
+                    <button class="text-foreground hover:text-primary transition-colors">Support</button>
+                </nav>
+                
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-muted-foreground hover:text-foreground transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="text-muted-foreground hover:text-foreground transition-colors" onclick="showPage('favorites')">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="relative text-muted-foreground hover:text-foreground transition-colors" onclick="showPage('cart')">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center cart-badge" data-bind="cartItemCount">3</span>
+                    </button>
+                    <button class="text-muted-foreground hover:text-foreground transition-colors" onclick="showPage('login')">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: HomePage [hero section, featured products, categories] -->
+    <div id="homepage" class="page active">
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-r from-primary to-blue-600 text-white">
+            <!-- Modern tech workspace with laptops and devices on a clean desk -->
+            <div class="absolute inset-0 bg-black opacity-20"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Next-Gen Mobility</h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">Discover the latest in professional technology</p>
+                <button class="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" onclick="showPage('products')">
+                    Shop Now
+                </button>
+            </div>
+        </section>
+
+        <!-- Top Trending Products -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 class="text-3xl font-bold text-center mb-12">Top Trending Products</h2>
+            
+            <!-- @MAP: featuredProducts.map(product => ( -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card 1 -->
+                <div class="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <!-- Apple MacBook Pro laptop in silver with retina display -->
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="MacBook Pro" class="w-full h-48 object-cover rounded-lg mb-4" data-mock="true">
+                    <h3 class="font-semibold text-lg mb-2" data-bind="product.name">Apple MacBook Pro 2024 14"</h3>
+                    <p class="text-muted-foreground mb-4" data-bind="product.description">Professional laptop with M3 chip and advanced features</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-primary" data-bind="product.price">$1,999.00</span>
+                        <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <!-- Latest iPhone in deep purple color with premium finish -->
+                    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="iPhone 15 Pro" class="w-full h-48 object-cover rounded-lg mb-4" data-mock="true">
+                    <h3 class="font-semibold text-lg mb-2" data-bind="product.name">iPhone 15 Pro Max</h3>
+                    <p class="text-muted-foreground mb-4" data-bind="product.description">Latest iPhone with titanium design and A17 Pro chip</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-primary" data-bind="product.price">$1,199.00</span>
+                        <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <!-- Professional camera with telephoto lens on white background -->
+                    <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Professional Camera" class="w-full h-48 object-cover rounded-lg mb-4" data-mock="true">
+                    <h3 class="font-semibold text-lg mb-2" data-bind="product.name">Canon EOS R6 Mark II</h3>
+                    <p class="text-muted-foreground mb-4" data-bind="product.description">Professional mirrorless camera with exceptional image quality</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-primary" data-bind="product.price">$2,499.00</span>
+                        <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </section>
+
+        <!-- Categories Section -->
+        <section class="bg-muted py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-12">Shop by Category</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-card rounded-lg p-8 text-center hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('products')">
+                        <i class="fas fa-laptop text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Laptops</h3>
+                        <p class="text-muted-foreground">Professional and gaming laptops</p>
+                    </div>
+                    <div class="bg-card rounded-lg p-8 text-center hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('products')">
+                        <i class="fas fa-mobile-alt text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Mobile Devices</h3>
+                        <p class="text-muted-foreground">Smartphones and tablets</p>
+                    </div>
+                    <div class="bg-card rounded-lg p-8 text-center hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('products')">
+                        <i class="fas fa-headphones text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Accessories</h3>
+                        <p class="text-muted-foreground">Audio, storage, and more</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- @END_COMPONENT: HomePage -->
+
+    <!-- @COMPONENT: ProductCatalog [product grid, filters, search] -->
+    <div id="products" class="page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Page Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold">Products</h1>
+                    <p class="text-muted-foreground mt-1">Discover our complete collection</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <select class="border border-input rounded-lg px-3 py-2">
+                        <option>Sort by: Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Newest First</option>
+                    </select>
+                    <div class="flex border border-input rounded-lg">
+                        <button class="px-3 py-2 bg-primary text-primary-foreground rounded-l-lg">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="px-3 py-2 hover:bg-muted rounded-r-lg">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Filters Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <h3 class="font-semibold mb-4">Filters</h3>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Category</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Laptops (24)</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Phones (18)</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Accessories (36)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Price Range</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="price" class="mr-2" data-mock="true">
+                                    <span>Under $500</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="price" class="mr-2" data-mock="true">
+                                    <span>$500 - $1000</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="price" class="mr-2" data-mock="true">
+                                    <span>$1000 - $2000</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="price" class="mr-2" data-mock="true">
+                                    <span>Over $2000</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Brand Filter -->
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Brand</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Apple</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Samsung</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>Dell</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" data-mock="true">
+                                    <span>HP</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="lg:col-span-3">
+                    <!-- @MAP: products.map(product => ( -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Product 1 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- Apple MacBook Air in space gray with clean studio lighting -->
+                            <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="MacBook Air" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">Apple MacBook Air M2</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">13-inch, 8GB RAM, 256GB SSD</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$1,199.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.8)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- Samsung Galaxy smartphone in phantom black with edge-to-edge display -->
+                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Samsung Galaxy" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">Samsung Galaxy S24 Ultra</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">256GB, 12GB RAM, S Pen included</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$1,299.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.6)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- Professional wireless headphones in matte black finish -->
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Wireless Headphones" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">Sony WH-1000XM5</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">Noise canceling wireless headphones</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$399.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.9)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product 4 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- Gaming laptop with RGB keyboard in dark setting -->
+                            <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Gaming Laptop" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">ASUS ROG Strix G15</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">Gaming laptop with RTX 4060, 16GB RAM</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$1,499.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.2)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product 5 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- Apple iPad with stylus on minimalist desk setup -->
+                            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="iPad Pro" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">iPad Pro 12.9"</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">M2 chip, 128GB, WiFi + Cellular</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$1,099.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.7)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Product 6 -->
+                        <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="showPage('product-detail')">
+                            <!-- High-end mechanical keyboard with RGB backlighting -->
+                            <img src="https://pixabay.com/get/gbc43c9cc11b8cee7cae7df4b3d8040b438a22dc220251fae173257122bd4601c265de6207752b7e5af5f9bb06566dbd6a13bfcc95ba2dca37ecf1301f6a4cc55_1280.jpg" alt="Mechanical Keyboard" class="w-full h-48 object-cover" data-mock="true">
+                            <div class="p-4">
+                                <h3 class="font-semibold mb-2" data-bind="product.name">Logitech MX Keys Pro</h3>
+                                <p class="text-muted-foreground text-sm mb-3" data-bind="product.shortDescription">Wireless mechanical keyboard with backlighting</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary" data-bind="product.price">$199.00</span>
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-sm text-muted-foreground" data-bind="product.rating">(4.5)</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+
+                    <!-- Pagination -->
+                    <div class="flex justify-center mt-12">
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-input rounded-lg hover:bg-muted transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="px-3 py-2 bg-primary text-primary-foreground rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-input rounded-lg hover:bg-muted transition-colors">2</button>
+                            <button class="px-3 py-2 border border-input rounded-lg hover:bg-muted transition-colors">3</button>
+                            <button class="px-3 py-2 border border-input rounded-lg hover:bg-muted transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ProductCatalog -->
+
+    <!-- @COMPONENT: ProductDetail [product images, specifications, related products] -->
+    <div id="product-detail" class="page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <li><button class="hover:text-foreground" onclick="showPage('homepage')">Home</button></li>
+                    <li><i class="fas fa-chevron-right"></i></li>
+                    <li><button class="hover:text-foreground" onclick="showPage('products')">Products</button></li>
+                    <li><i class="fas fa-chevron-right"></i></li>
+                    <li class="text-foreground">Apple MacBook Pro 2024 14"</li>
+                </ol>
+            </nav>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Product Images -->
+                <div>
+                    <div class="mb-4">
+                        <!-- Apple MacBook Pro with vivid Liquid Retina XDR display showing colorful content -->
+                        <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400" alt="MacBook Pro Main" class="w-full rounded-lg" data-mock="true">
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <!-- MacBook Pro from side angle showing slim profile -->
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" alt="MacBook Pro Side" class="rounded-lg border border-border cursor-pointer hover:border-primary transition-colors" data-mock="true">
+                        <!-- MacBook Pro keyboard and trackpad detail shot -->
+                        <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" alt="MacBook Pro Keyboard" class="rounded-lg border border-border cursor-pointer hover:border-primary transition-colors" data-mock="true">
+                        <!-- MacBook Pro ports and connectivity options -->
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" alt="MacBook Pro Ports" class="rounded-lg border border-border cursor-pointer hover:border-primary transition-colors" data-mock="true">
+                        <!-- MacBook Pro in use showing screen quality -->
+                        <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" alt="MacBook Pro Screen" class="rounded-lg border border-border cursor-pointer hover:border-primary transition-colors" data-mock="true">
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div>
+                    <h1 class="text-3xl font-bold mb-4" data-bind="product.name">Apple MacBook Pro 2024 14"</h1>
+                    
+                    <!-- Rating and Reviews -->
+                    <div class="flex items-center mb-6">
+                        <div class="flex text-yellow-400 mr-3">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="text-muted-foreground" data-bind="product.reviewCount">142 reviews</span>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-primary" data-bind="product.price">$1,999.00</span>
+                        <span class="text-lg text-muted-foreground line-through ml-3" data-bind="product.originalPrice">$2,199.00</span>
+                    </div>
+
+                    <!-- Product Options -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-3">Configuration</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Storage</label>
+                                <div class="flex space-x-2">
+                                    <button class="px-4 py-2 border border-primary bg-primary text-primary-foreground rounded-lg">512GB</button>
+                                    <button class="px-4 py-2 border border-input rounded-lg hover:border-primary transition-colors">1TB (+$200)</button>
+                                    <button class="px-4 py-2 border border-input rounded-lg hover:border-primary transition-colors">2TB (+$600)</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Memory</label>
+                                <div class="flex space-x-2">
+                                    <button class="px-4 py-2 border border-primary bg-primary text-primary-foreground rounded-lg">16GB</button>
+                                    <button class="px-4 py-2 border border-input rounded-lg hover:border-primary transition-colors">32GB (+$400)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add to Cart -->
+                    <div class="flex space-x-4 mb-8">
+                        <button class="flex-1 bg-primary text-primary-foreground py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                        </button>
+                        <button class="p-3 border border-input rounded-lg hover:bg-muted transition-colors" data-event="click:addToFavorites">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <!-- Product Description -->
+                    <div class="mb-8">
+                        <h3 class="font-semibold mb-3">Description</h3>
+                        <p class="text-muted-foreground leading-relaxed" data-bind="product.description" data-mock="true">
+                            The MacBook Pro 14-inch with M3 chip delivers exceptional performance for professionals. 
+                            Features include a stunning Liquid Retina XDR display, advanced camera and audio, 
+                            and all-day battery life. Perfect for creative work, development, and demanding applications.
+                        </p>
+                    </div>
+
+                    <!-- Specifications -->
+                    <div>
+                        <h3 class="font-semibold mb-3">Specifications</h3>
+                        <div class="bg-muted rounded-lg p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-medium">Processor:</span> Apple M3 Pro chip</div>
+                                <div><span class="font-medium">Display:</span> 14.2-inch Liquid Retina XDR</div>
+                                <div><span class="font-medium">Memory:</span> 16GB unified memory</div>
+                                <div><span class="font-medium">Storage:</span> 512GB SSD</div>
+                                <div><span class="font-medium">Graphics:</span> 18-core GPU</div>
+                                <div><span class="font-medium">Battery:</span> Up to 18 hours</div>
+                                <div><span class="font-medium">Weight:</span> 3.5 pounds (1.6 kg)</div>
+                                <div><span class="font-medium">Ports:</span> 3x Thunderbolt 4, HDMI, SD card</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <section class="mt-16">
+                <h2 class="text-2xl font-bold mb-8">Related Products</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Related Product 1 -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <!-- Apple MacBook Air in silver with clean background -->
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" alt="MacBook Air" class="w-full h-40 object-cover" data-mock="true">
+                        <div class="p-4">
+                            <h4 class="font-semibold mb-2" data-bind="relatedProduct.name">MacBook Air M2</h4>
+                            <p class="text-primary font-bold" data-bind="relatedProduct.price">$1,199.00</p>
+                        </div>
+                    </div>
+                    <!-- Related Product 2 -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <!-- Dell XPS laptop with infinity edge display -->
+                        <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" alt="Dell XPS" class="w-full h-40 object-cover" data-mock="true">
+                        <div class="p-4">
+                            <h4 class="font-semibold mb-2" data-bind="relatedProduct.name">Dell XPS 13</h4>
+                            <p class="text-primary font-bold" data-bind="relatedProduct.price">$999.00</p>
+                        </div>
+                    </div>
+                    <!-- Related Product 3 -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <!-- Premium laptop stand made of aluminum -->
+                        <img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" alt="Laptop Stand" class="w-full h-40 object-cover" data-mock="true">
+                        <div class="p-4">
+                            <h4 class="font-semibold mb-2" data-bind="relatedProduct.name">Aluminum Laptop Stand</h4>
+                            <p class="text-primary font-bold" data-bind="relatedProduct.price">$79.00</p>
+                        </div>
+                    </div>
+                    <!-- Related Product 4 -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <!-- Wireless mouse with modern ergonomic design -->
+                        <img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" alt="Wireless Mouse" class="w-full h-40 object-cover" data-mock="true">
+                        <div class="p-4">
+                            <h4 class="font-semibold mb-2" data-bind="relatedProduct.name">MX Master 3S</h4>
+                            <p class="text-primary font-bold" data-bind="relatedProduct.price">$99.00</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ProductDetail -->
+
+    <!-- @COMPONENT: ShoppingCart [cart items, quantity controls, checkout] -->
+    <div id="cart" class="page">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+            
+            <!-- Cart Items -->
+            <div class="bg-card border border-border rounded-lg">
+                <!-- @MAP: cartItems.map(item => ( -->
+                <!-- Cart Item 1 -->
+                <div class="flex items-center p-6 border-b border-border">
+                    <!-- Apple MacBook Pro in space gray on white background -->
+                    <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="MacBook Pro" class="w-20 h-20 object-cover rounded-lg mr-4" data-mock="true">
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="cartItem.name">Apple MacBook Pro 2024 14"</h3>
+                        <p class="text-muted-foreground text-sm" data-bind="cartItem.variant">512GB, 16GB RAM, Space Gray</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center border border-input rounded-lg">
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:decreaseQuantity">-</button>
+                            <span class="px-4 py-1" data-bind="cartItem.quantity">1</span>
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:increaseQuantity">+</button>
+                        </div>
+                        <span class="font-semibold w-24 text-right" data-bind="cartItem.total">$1,999.00</span>
+                        <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:removeFromCart">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cart Item 2 -->
+                <div class="flex items-center p-6 border-b border-border">
+                    <!-- Samsung Galaxy smartphone in titanium finish -->
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Samsung Galaxy" class="w-20 h-20 object-cover rounded-lg mr-4" data-mock="true">
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="cartItem.name">Samsung Galaxy S24 Ultra</h3>
+                        <p class="text-muted-foreground text-sm" data-bind="cartItem.variant">256GB, Titanium Black</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center border border-input rounded-lg">
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:decreaseQuantity">-</button>
+                            <span class="px-4 py-1" data-bind="cartItem.quantity">1</span>
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:increaseQuantity">+</button>
+                        </div>
+                        <span class="font-semibold w-24 text-right" data-bind="cartItem.total">$1,299.00</span>
+                        <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:removeFromCart">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cart Item 3 -->
+                <div class="flex items-center p-6">
+                    <!-- Premium wireless headphones in elegant packaging -->
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Wireless Headphones" class="w-20 h-20 object-cover rounded-lg mr-4" data-mock="true">
+                    <div class="flex-1">
+                        <h3 class="font-semibold" data-bind="cartItem.name">Sony WH-1000XM5</h3>
+                        <p class="text-muted-foreground text-sm" data-bind="cartItem.variant">Midnight Black, Noise Canceling</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center border border-input rounded-lg">
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:decreaseQuantity">-</button>
+                            <span class="px-4 py-1" data-bind="cartItem.quantity">1</span>
+                            <button class="px-3 py-1 hover:bg-muted transition-colors" data-event="click:increaseQuantity">+</button>
+                        </div>
+                        <span class="font-semibold w-24 text-right" data-bind="cartItem.total">$399.00</span>
+                        <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:removeFromCart">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="mt-8 bg-card border border-border rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span data-bind="cart.subtotal">$3,697.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Shipping</span>
+                        <span data-bind="cart.shipping">Free</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Tax</span>
+                        <span data-bind="cart.tax">$295.76</span>
+                    </div>
+                    <div class="border-t border-border pt-2 flex justify-between font-semibold text-lg">
+                        <span>Total</span>
+                        <span data-bind="cart.total">$3,992.76</span>
+                    </div>
+                </div>
+                <button class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="showPage('checkout')">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ShoppingCart -->
+
+    <!-- @COMPONENT: Checkout [billing form, payment, order review] -->
+    <div id="checkout" class="page">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Checkout Form -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Shipping Information -->
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">First Name</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Last Name</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Doe">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium mb-1">Email</label>
+                                <input type="email" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="john.doe@example.com">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium mb-1">Address</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="123 Main Street">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">City</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="San Francisco">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">ZIP Code</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="94102">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div class="bg-card border border-border rounded-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">Payment Information</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Card Number</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Expiry Date</label>
+                                    <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="MM/YY">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">CVV</label>
+                                    <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="123">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-card border border-border rounded-lg p-6 sticky top-24">
+                        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                        
+                        <!-- Order Items -->
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center">
+                                <!-- Apple MacBook Pro thumbnail -->
+                                <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="MacBook Pro" class="w-12 h-12 object-cover rounded mr-3" data-mock="true">
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm" data-bind="orderItem.name">MacBook Pro 14"</p>
+                                    <p class="text-muted-foreground text-xs" data-bind="orderItem.quantity">Qty: 1</p>
+                                </div>
+                                <span class="font-semibold" data-bind="orderItem.price">$1,999.00</span>
+                            </div>
+                            <div class="flex items-center">
+                                <!-- Samsung Galaxy smartphone thumbnail -->
+                                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="Samsung Galaxy" class="w-12 h-12 object-cover rounded mr-3" data-mock="true">
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm" data-bind="orderItem.name">Samsung Galaxy S24</p>
+                                    <p class="text-muted-foreground text-xs" data-bind="orderItem.quantity">Qty: 1</p>
+                                </div>
+                                <span class="font-semibold" data-bind="orderItem.price">$1,299.00</span>
+                            </div>
+                            <div class="flex items-center">
+                                <!-- Sony headphones thumbnail -->
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="Sony Headphones" class="w-12 h-12 object-cover rounded mr-3" data-mock="true">
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm" data-bind="orderItem.name">Sony WH-1000XM5</p>
+                                    <p class="text-muted-foreground text-xs" data-bind="orderItem.quantity">Qty: 1</p>
+                                </div>
+                                <span class="font-semibold" data-bind="orderItem.price">$399.00</span>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+
+                        <!-- Order Total -->
+                        <div class="border-t border-border pt-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span>Subtotal</span>
+                                <span data-bind="order.subtotal">$3,697.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Shipping</span>
+                                <span data-bind="order.shipping">Free</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tax</span>
+                                <span data-bind="order.tax">$295.76</span>
+                            </div>
+                            <div class="border-t border-border pt-2 flex justify-between font-semibold text-lg">
+                                <span>Total</span>
+                                <span data-bind="order.total">$3,992.76</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors" data-event="click:placeOrder">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ShoppingCart -->
+
+    <!-- @COMPONENT: LoginRegister [authentication forms] -->
+    <div id="login" class="page">
+        <div class="min-h-screen flex">
+            <!-- Left Side - Form -->
+            <div class="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold">Welcome back</h2>
+                        <p class="mt-2 text-muted-foreground">Sign in to your account</p>
+                    </div>
+                    
+                    <form class="space-y-6" data-implementation="Should validate form before submission">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Enter your email">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Password</label>
+                            <input type="password" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Enter your password">
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2" data-mock="true">
+                                <span class="text-sm">Remember me</span>
+                            </label>
+                            <button type="button" class="text-sm text-primary hover:text-primary/80">Forgot password?</button>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors" data-event="click:handleLogin">
+                            Sign In
+                        </button>
+                    </form>
+                    
+                    <div class="text-center">
+                        <p class="text-muted-foreground">
+                            Don't have an account? 
+                            <button class="text-primary hover:text-primary/80 font-medium" onclick="showPage('register')">Sign up</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Hero Image -->
+            <div class="hidden lg:block lg:flex-1">
+                <!-- Modern tech workspace with multiple devices and clean aesthetic -->
+                <div class="h-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
+                    <div class="text-center">
+                        <h3 class="text-4xl font-bold mb-4">Next-Gen Mobility</h3>
+                        <p class="text-xl opacity-90">Join thousands of satisfied customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: LoginRegister -->
+
+    <!-- @COMPONENT: Register [registration form] -->
+    <div id="register" class="page">
+        <div class="min-h-screen flex">
+            <!-- Left Side - Form -->
+            <div class="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold">Create account</h2>
+                        <p class="mt-2 text-muted-foreground">Join TechHub today</p>
+                    </div>
+                    
+                    <form class="space-y-6" data-implementation="Should validate form and create user account">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">First Name</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Last Name</label>
+                                <input type="text" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Doe">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="john.doe@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Password</label>
+                            <input type="password" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Create a strong password">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Confirm Password</label>
+                            <input type="password" class="w-full border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" data-mock="true" placeholder="Confirm your password">
+                        </div>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2" data-mock="true">
+                                <span class="text-sm">I agree to the Terms of Service and Privacy Policy</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors" data-event="click:handleRegister">
+                            Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="text-center">
+                        <p class="text-muted-foreground">
+                            Already have an account? 
+                            <button class="text-primary hover:text-primary/80 font-medium" onclick="showPage('login')">Sign in</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Hero Image -->
+            <div class="hidden lg:block lg:flex-1">
+                <!-- Professional workspace with latest technology and modern setup -->
+                <div class="h-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white">
+                    <div class="text-center">
+                        <h3 class="text-4xl font-bold mb-4">Join TechHub</h3>
+                        <p class="text-xl opacity-90">Discover the future of technology</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Register -->
+
+    <!-- @COMPONENT: Favorites [saved products list] -->
+    <div id="favorites" class="page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold">Favorites</h1>
+                <span class="text-muted-foreground" data-bind="favorites.count">5 items</span>
+            </div>
+            
+            <!-- @MAP: favoriteItems.map(item => ( -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Favorite Item 1 -->
+                <div class="bg-card border border-border rounded-lg overflow-hidden">
+                    <!-- Apple MacBook Pro with stunning retina display -->
+                    <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="MacBook Pro" class="w-full h-48 object-cover" data-mock="true">
+                    <div class="p-4">
+                        <h3 class="font-semibold mb-2" data-bind="favoriteItem.name">Apple MacBook Pro 14"</h3>
+                        <p class="text-primary font-bold mb-3" data-bind="favoriteItem.price">$1,999.00</p>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                            </button>
+                            <button class="p-2 border border-input rounded-lg text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors" data-event="click:removeFromFavorites">
+                                <i class="fas fa-heart-broken"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite Item 2 -->
+                <div class="bg-card border border-border rounded-lg overflow-hidden">
+                    <!-- Latest iPhone with premium finish and advanced cameras -->
+                    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="iPhone 15 Pro" class="w-full h-48 object-cover" data-mock="true">
+                    <div class="p-4">
+                        <h3 class="font-semibold mb-2" data-bind="favoriteItem.name">iPhone 15 Pro Max</h3>
+                        <p class="text-primary font-bold mb-3" data-bind="favoriteItem.price">$1,199.00</p>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors" data-event="click:addToCart">
+                                <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                            </button>
+                            <button class="p-2 border border-input rounded-lg text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors" data-event="click:removeFromFavorites">
+                                <i class="fas fa-heart-broken"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Favorites -->
+
+    <!-- @COMPONENT: UserDashboard [user management interface] -->
+    <div id="dashboard" class="page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">User Dashboard</h1>
+            
+            <!-- Dashboard Navigation -->
+            <div class="bg-card border border-border rounded-lg mb-8">
+                <div class="flex border-b border-border">
+                    <button class="px-6 py-3 border-b-2 border-primary text-primary font-medium">Users</button>
+                    <button class="px-6 py-3 text-muted-foreground hover:text-foreground transition-colors">Orders</button>
+                    <button class="px-6 py-3 text-muted-foreground hover:text-foreground transition-colors">Products</button>
+                    <button class="px-6 py-3 text-muted-foreground hover:text-foreground transition-colors">Analytics</button>
+                </div>
+                
+                <!-- User Management Table -->
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold">User Management</h2>
+                        <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add User
+                        </button>
+                    </div>
+                    
+                    <!-- @MAP: users.map(user => ( -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 font-medium">User</th>
+                                    <th class="text-left py-3 font-medium">Email</th>
+                                    <th class="text-left py-3 font-medium">Status</th>
+                                    <th class="text-left py-3 font-medium">Role</th>
+                                    <th class="text-left py-3 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-border hover:bg-muted/50 transition-colors">
+                                    <td class="py-4 flex items-center">
+                                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold mr-3">
+                                            JD
+                                        </div>
+                                        <span data-bind="user.name">John Doe</span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.email">john.doe@example.com</td>
+                                    <td class="py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" data-bind="user.status">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.role">Customer</td>
+                                    <td class="py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editUser">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteUser">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-border hover:bg-muted/50 transition-colors">
+                                    <td class="py-4 flex items-center">
+                                        <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center text-secondary-foreground font-semibold mr-3">
+                                            JS
+                                        </div>
+                                        <span data-bind="user.name">Jane Smith</span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.email">jane.smith@example.com</td>
+                                    <td class="py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" data-bind="user.status">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.role">Admin</td>
+                                    <td class="py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editUser">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteUser">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-border hover:bg-muted/50 transition-colors">
+                                    <td class="py-4 flex items-center">
+                                        <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center text-accent-foreground font-semibold mr-3">
+                                            MB
+                                        </div>
+                                        <span data-bind="user.name">Mike Brown</span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.email">mike.brown@example.com</td>
+                                    <td class="py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800" data-bind="user.status">
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td class="py-4" data-bind="user.role">Customer</td>
+                                    <td class="py-4">
+                                        <div class="flex space-x-2">
+                                            <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editUser">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteUser">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: UserDashboard -->
+
+    <!-- @COMPONENT: Categories [category management] -->
+    <div id="categories" class="page">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-3xl font-bold">Categories</h1>
+                <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add Category
+                </button>
+            </div>
+            
+            <div class="bg-card border border-border rounded-lg overflow-hidden">
+                <div class="p-6 border-b border-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <button class="px-4 py-2 bg-primary text-primary-foreground rounded-lg">All Products</button>
+                            <button class="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">Laptop</button>
+                            <button class="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">Phone</button>
+                            <button class="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">Tablet</button>
+                            <button class="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors">Camera</button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="search" placeholder="Search products..." class="border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring">
+                            <button class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">Search</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product List View -->
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Product Item 1 -->
+                        <div class="flex items-center p-4 border border-border rounded-lg hover:shadow-sm transition-shadow">
+                            <!-- Apple MacBook Pro product shot with specifications visible -->
+                            <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="MacBook Pro" class="w-16 h-16 object-cover rounded-lg mr-4" data-mock="true">
+                            <div class="flex-1">
+                                <h4 class="font-semibold" data-bind="product.name">Apple MacBook Pro 2024 14"</h4>
+                                <p class="text-muted-foreground text-sm" data-bind="product.sku">SKU: MBP-14-2024-SG</p>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <span class="font-semibold" data-bind="product.price">$1,999.00</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full" data-bind="product.stock">In Stock</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editProduct">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteProduct">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Item 2 -->
+                        <div class="flex items-center p-4 border border-border rounded-lg hover:shadow-sm transition-shadow">
+                            <!-- Samsung Galaxy with premium titanium design -->
+                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="Samsung Galaxy" class="w-16 h-16 object-cover rounded-lg mr-4" data-mock="true">
+                            <div class="flex-1">
+                                <h4 class="font-semibold" data-bind="product.name">Samsung Galaxy S24 Ultra</h4>
+                                <p class="text-muted-foreground text-sm" data-bind="product.sku">SKU: SGS24-256-TB</p>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <span class="font-semibold" data-bind="product.price">$1,299.00</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full" data-bind="product.stock">In Stock</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editProduct">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteProduct">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Item 3 -->
+                        <div class="flex items-center p-4 border border-border rounded-lg hover:shadow-sm transition-shadow">
+                            <!-- Professional headphones with noise canceling technology -->
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="Sony Headphones" class="w-16 h-16 object-cover rounded-lg mr-4" data-mock="true">
+                            <div class="flex-1">
+                                <h4 class="font-semibold" data-bind="product.name">Sony WH-1000XM5</h4>
+                                <p class="text-muted-foreground text-sm" data-bind="product.sku">SKU: SONY-XM5-BK</p>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <span class="font-semibold" data-bind="product.price">$399.00</span>
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full" data-bind="product.stock">Low Stock</span>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-primary/80 transition-colors" data-event="click:editProduct">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-destructive hover:text-destructive/80 transition-colors" data-event="click:deleteProduct">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: UserDashboard -->
+
+    <!-- Footer -->
+    <footer class="bg-muted border-t border-border mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4">TechHub</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Your trusted partner for the latest in professional technology and electronics.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Products</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Laptops</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Smartphones</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Accessories</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Cameras</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Shipping Info</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-muted-foreground">
+                        <li><a href="#" class="hover:text-foreground transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-foreground transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-border mt-8 pt-8 text-center text-muted-foreground text-sm">
+                <p>&copy; 2024 TechHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        (function() {
+            // Page navigation
+            window.showPage = function(pageId) {
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show selected page
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+                
+                // Update URL without page refresh
+                history.pushState({page: pageId}, '', `#${pageId}`);
+            };
+            
+            // Handle browser back/forward
+            window.addEventListener('popstate', function(e) {
+                const page = e.state?.page || 'homepage';
+                showPage(page);
+            });
+            
+            // Initialize page from URL hash
+            const initialPage = location.hash.slice(1) || 'homepage';
+            showPage(initialPage);
+            
+            // Cart functionality mock
+            let cartCount = 3;
+            window.updateCartCount = function(delta) {
+                cartCount = Math.max(0, cartCount + delta);
+                const badge = document.querySelector('.cart-badge');
+                if (badge) {
+                    badge.textContent = cartCount;
+                    badge.classList.add('animate-pulse');
+                    setTimeout(() => badge.classList.remove('animate-pulse'), 300);
+                }
+            };
+            
+            // Add to cart buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event*="addToCart"]')) {
+                    e.preventDefault();
+                    updateCartCount(1);
+                    // TODO: Add product to cart state
+                }
+                
+                if (e.target.closest('[data-event*="removeFromCart"]')) {
+                    e.preventDefault();
+                    updateCartCount(-1);
+                    // TODO: Remove product from cart state
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Heart, ShoppingCart, User, Menu } from "lucide-react";
 import { useCartStore } from "@/store/cart";
@@ -11,11 +12,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LoginModal } from "../../components/auth/login-modal";
+import { RegisterModal } from "@/components/auth/register-modal";
 
 export function Header() {
   const [location] = useLocation();
   const itemCount = useCartStore(state => state.getItemCount());
   const { user, isAuthenticated, logout } = useAuthStore();
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [registerModalOpen, setRegisterModalOpen] = useState(false);
+
+  const switchToRegister = () => {
+    setLoginModalOpen(false);
+    setRegisterModalOpen(true);
+  };
+
+  const switchToLogin = () => {
+    setRegisterModalOpen(false);
+    setLoginModalOpen(true);
+  };
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -98,11 +113,14 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login" data-testid="link-login">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setLoginModalOpen(true)}
+                data-testid="button-open-login"
+              >
+                <User className="h-5 w-5" />
+              </Button>
             )}
             
             {/* Mobile menu */}
@@ -127,6 +145,18 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Auth Modals */}
+      <LoginModal 
+        open={loginModalOpen} 
+        onOpenChange={setLoginModalOpen}
+        onSwitchToRegister={switchToRegister}
+      />
+      <RegisterModal 
+        open={registerModalOpen} 
+        onOpenChange={setRegisterModalOpen}
+        onSwitchToLogin={switchToLogin}
+      />
     </header>
   );
 }

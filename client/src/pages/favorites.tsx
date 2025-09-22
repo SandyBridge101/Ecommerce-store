@@ -72,9 +72,9 @@ export default function Favorites() {
           <p className="text-muted-foreground mb-4" data-testid="text-login-required">
             Please log in to view your favorites.
           </p>
-          <Link href="/login">
-            <Button data-testid="button-login">Login</Button>
-          </Link>
+          <p className="text-muted-foreground text-sm" data-testid="text-login-instruction">
+            Click the user icon in the header to log in.
+          </p>
         </div>
       </div>
     );

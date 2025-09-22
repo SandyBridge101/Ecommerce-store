@@ -11,8 +11,6 @@ import Products from "@/pages/products";
 import ProductDetail from "@/pages/product-detail";
 import Cart from "@/pages/cart";
 import Checkout from "@/pages/checkout";
-import Login from "@/pages/login";
-import Register from "@/pages/register";
 import Favorites from "@/pages/favorites";
 import Dashboard from "@/pages/dashboard";
 
@@ -27,8 +25,6 @@ function Router() {
           <Route path="/products/:id" component={ProductDetail} />
           <Route path="/cart" component={Cart} />
           <Route path="/checkout" component={Checkout} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
           <Route path="/favorites" component={Favorites} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/categories" component={Products} />
